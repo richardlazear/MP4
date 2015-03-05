@@ -31,7 +31,6 @@ void traversePreOrder(node *);
 void traversePostOrder(node *);
 void traverseLevelOrder(node *);
 // End traverse functions
-void insertNode(node * &, string);
 void deleteNode(node * &, string);
 
 int main()
@@ -50,15 +49,17 @@ int main()
 			addNode(root, line);
 		}
 	myFile.close();
+	cout << endl;
 
 	// Menu
 	int userSelection;
+	string insertInput, deleteInput;
 	do
 	{
 		cout << "1. Traverse" << endl;
 		cout << "2. Insert" << endl;
 		cout << "3. Delete" << endl;
-		cout << "0. Exit" << endl;
+		cout << "4. Exit" << endl;
 		cout << "Please enter your selection: ";
 		cin >> userSelection;
 
@@ -104,10 +105,17 @@ int main()
 			} while (traverseSelection != 5);
 		case 2:
 			// insert
+			cout << "Please enter the string you would like to insert into the binary tree: ";
+			
+			cin >> insertInput;
+			addNode(root, insertInput);
 			break;
 
 		case 3:
 			// delete
+			cout << "Please enter the string you would like to delete from the binary tree: ";
+			cin >> deleteInput;
+			deleteNode(root, deleteInput);
 			break;
 
 		case 4: // Exit the program
@@ -118,6 +126,7 @@ int main()
 			break;
 		}
 	} while (userSelection != 4);
+	cout << endl << root->occurrences;
 
 	system("PAUSE");
 }
@@ -137,7 +146,7 @@ void addNode(node * &inTree, string inString)
 				current->left = NULL;
 				current->right = NULL;
 				current->myString = inString;
-				//current->occurrences = 1;
+				current->occurrences = 1;
 				cout << current->myString;
 				added = true;
 			}
@@ -155,7 +164,7 @@ void addNode(node * &inTree, string inString)
 				current->left = NULL;
 				current->right = NULL;
 				current->myString = inString;
-				//current->occurrences = 1;
+				current->occurrences = 1;
 				cout << current->myString;
 				added = true;
 			}
@@ -228,4 +237,13 @@ void traverseLevelOrder(node * inTree)
 {
 	node * current = inTree;
 	
+}
+
+void deleteNode(node * &inTree, string toDelete)
+{
+	node * current = inTree;
+	if (current)
+	{
+		
+	}
 }
