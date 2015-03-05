@@ -198,11 +198,11 @@ void traversePreOrder(node * inTree) // Data Left Right
 		cout << current->myString << " ";
 		if (current->left != NULL)
 		{
-			traverseInOrder(current->left);
+			traversePreOrder(current->left);
 		}
 		if (current->right != NULL)
 		{
-			traverseInOrder(current->right);
+			traversePreOrder(current->right);
 		}
 	}
 }
@@ -214,11 +214,11 @@ void traversePostOrder(node * inTree) // Left Right Data
 	{
 		if (current->left != NULL)
 		{
-			traverseInOrder(current->left);
+			traversePostOrder(current->left);
 		}
 		if (current->right != NULL)
 		{
-			traverseInOrder(current->right);
+			traversePostOrder(current->right);
 		}
 		cout << current->myString << " ";
 	}
