@@ -33,6 +33,7 @@ void traverseLevelOrder(node *);
 // End traverse functions
 node * searchNode(node * &, string);
 void deleteNode(node * &, string);
+void deleteRoot(node * &);
 
 int main()
 {
@@ -74,6 +75,7 @@ int main()
 			int traverseSelection;
 			do
 			{
+				cout << endl;
 				cout << "1. InOrder" << endl;
 				cout << "2. PreOrder" << endl;
 				cout << "3. PostOrder" << endl;
@@ -108,6 +110,8 @@ int main()
 					break;
 				}
 			} while (traverseSelection != 5);
+			break;
+
 		case 2:
 			// insert
 			cout << "Please enter the string you would like to insert into the binary tree: ";
@@ -280,7 +284,76 @@ node * searchNode(node * &inTree, string toFind)
 
 void deleteNode(node * &inTree, string toDelete)
 {
-	node * parentOfNodeToDelete = inTree;
 	// Search for the string in a node in the BST, and return the parent of that specific node to the function
-	
+	node * parent = searchNode(inTree, toDelete);
+	if (parent->nodeLevel == 1) // The use wants to remove the root node
+	{
+		deleteRoot(parent);
+	}
+	else
+	{
+		// Determine which child of the parent is to be deleted
+		node * nodeToDelete = NULL;
+		bool leftChild; // Keeps track of which of the parent's nodes is to be deleted
+		if (parent->left != NULL && parent->left->myString == toDelete)
+		{
+			nodeToDelete = parent->left;
+			leftChild = true;
+		}
+		else if (parent->right != NULL && parent->right->myString == toDelete)
+		{
+			nodeToDelete = parent->right;
+			leftChild = false;
+		}
+
+		// Check if the node to delete has any children.  If not, delete the node and set its parent's reference to NULL
+		if (nodeToDelete->left == NULL && nodeToDelete->right == NULL)
+		{
+			if (leftChild)
+			{
+				parent->left = NULL;
+				delete nodeToDelete;
+			}
+			else
+			{
+				parent->right = NULL;
+				delete nodeToDelete;
+			}
+		}
+		// If the node to delete has only one child, bypass the node to delete and connect the parent with the child's child
+		else if (nodeToDelete->left == NULL || nodeToDelete->right == NULL)
+		{
+			if (nodeToDelete->left == NULL)
+			{
+				if (leftChild)
+				{
+					parent->left = nodeToDelete->right;
+					delete nodeToDelete;
+				}
+				else
+				{
+					parent->right = nodeToDelete->right;
+					delete nodeToDelete;
+				}
+			}
+			else if (nodeToDelete->right == NULL)
+			{
+				if (leftChild)
+				{
+					parent->left = nodeToDelete->left;
+					delete nodeToDelete;
+				}
+				else
+				{
+					parent->right = nodeToDelete->left;
+					delete nodeToDelete;
+				}
+			}
+		}
+	}
+}
+
+void deleteRoot(node * &inTree)
+{
+	// procedure for deleting the root of the BST
 }
