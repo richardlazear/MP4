@@ -306,7 +306,7 @@ void deleteNode(node * &inTree, string toDelete)
 			leftChild = false;
 		}
 
-		// Check if the node to delete has any children.  If not, delete the node and set its parent's reference to NULL
+		// If the node to delete does not have any children, delete the node and set its parent's reference to NULL
 		if (nodeToDelete->left == NULL && nodeToDelete->right == NULL)
 		{
 			if (leftChild)
