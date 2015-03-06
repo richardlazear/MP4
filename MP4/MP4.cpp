@@ -17,7 +17,7 @@ using namespace std;
 struct node
 {
 	string myString;
-	int occurrences = 0;
+	int occurrences;
 	int nodeLevel;
 	node * left;
 	node * right;
@@ -31,6 +31,7 @@ void traversePreOrder(node *);
 void traversePostOrder(node *);
 void traverseLevelOrder(node *);
 // End traverse functions
+node * searchNode(node * &, string);
 void deleteNode(node * &, string);
 
 int main()
@@ -50,6 +51,10 @@ int main()
 		}
 	myFile.close();
 	cout << endl;
+
+	cout << "test" << endl;
+	node * test = searchNode(root, "van");
+	cout << test->myString << endl;
 
 	// Menu
 	int userSelection;
@@ -239,11 +244,43 @@ void traverseLevelOrder(node * inTree)
 	
 }
 
-void deleteNode(node * &inTree, string toDelete)
+node * searchNode(node * &inTree, string toFind)
 {
 	node * current = inTree;
-	if (current)
+	if (toFind == current->myString) // The root node is where the string to find is located
 	{
-		
+		return current;
 	}
+	else
+	{
+		if (toFind < current->myString)
+		{
+			if (toFind == current->left->myString)
+			{
+				return current;
+			}
+			else
+			{
+				return searchNode(current->left, toFind);
+			}
+		}
+		else if (toFind > current->myString)
+		{
+			if (toFind == current->right->myString)
+			{
+				return current;
+			}
+			else
+			{
+				return searchNode(current->right, toFind);
+			}
+		}
+	}
+}
+
+void deleteNode(node * &inTree, string toDelete)
+{
+	node * parentOfNodeToDelete = inTree;
+	// Search for the string in a node in the BST, and return the parent of that specific node to the function
+	
 }
