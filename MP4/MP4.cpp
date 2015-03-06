@@ -350,6 +350,18 @@ void deleteNode(node * &inTree, string toDelete)
 				}
 			}
 		}
+		// If the node has two children...(delete the node and move all of its right children up one level)
+		else
+		{
+			if (leftChild)
+			{
+
+			}
+			else
+			{
+
+			}
+		}
 	}
 }
 
