@@ -286,7 +286,7 @@ void deleteNode(node * &inTree, string toDelete)
 {
 	// Search for the string in a node in the BST, and return the parent of that specific node to the function
 	node * parent = searchNode(inTree, toDelete);
-	if (parent->nodeLevel == 1) // The use wants to remove the root node
+	if (parent->nodeLevel == 1) // The user wants to remove the root node
 	{
 		deleteRoot(parent);
 	}
@@ -294,22 +294,22 @@ void deleteNode(node * &inTree, string toDelete)
 	{
 		// Determine which child of the parent is to be deleted
 		node * nodeToDelete = NULL;
-		bool leftChild; // Keeps track of which of the parent's nodes is to be deleted
+		bool toDeleteLeftChild; // Keeps track of which of the parent's nodes is to be deleted
 		if (parent->left != NULL && parent->left->myString == toDelete)
 		{
 			nodeToDelete = parent->left;
-			leftChild = true;
+			toDeleteLeftChild = true;
 		}
 		else if (parent->right != NULL && parent->right->myString == toDelete)
 		{
 			nodeToDelete = parent->right;
-			leftChild = false;
+			toDeleteLeftChild = false;
 		}
 
 		// If the node to delete does not have any children, delete the node and set its parent's reference to NULL
 		if (nodeToDelete->left == NULL && nodeToDelete->right == NULL)
 		{
-			if (leftChild)
+			if (toDeleteLeftChild)
 			{
 				parent->left = NULL;
 				delete nodeToDelete;
@@ -325,7 +325,7 @@ void deleteNode(node * &inTree, string toDelete)
 		{
 			if (nodeToDelete->left == NULL)
 			{
-				if (leftChild)
+				if (toDeleteLeftChild)
 				{
 					parent->left = nodeToDelete->right;
 					delete nodeToDelete;
@@ -338,7 +338,7 @@ void deleteNode(node * &inTree, string toDelete)
 			}
 			else if (nodeToDelete->right == NULL)
 			{
-				if (leftChild)
+				if (toDeleteLeftChild)
 				{
 					parent->left = nodeToDelete->left;
 					delete nodeToDelete;
@@ -350,16 +350,28 @@ void deleteNode(node * &inTree, string toDelete)
 				}
 			}
 		}
-		// If the node has two children...(delete the node and move all of its right children up one level)
+		// If the node has two children...
 		else
 		{
-			if (leftChild)
+			if (toDeleteLeftChild)
 			{
-
+				// Check if the node to delete has any leafs...if so, replace the node to delete with the leaf
+				if (nodeToDelete->left->left == NULL && nodeToDelete->left->right == NULL)
+				{
+					parent->left = nodeToDelete->left;
+					parent->left->right = nodeToDelete->right;
+					delete nodeToDelete;
+				}
 			}
 			else
 			{
-
+				// Check if the node to delete has any leafs...if so, replace the node to delete with the leaf
+				if (nodeToDelete->left->left == NULL && nodeToDelete->left->right == NULL)
+				{
+					parent->right = nodeToDelete->left;
+					parent->right->right = nodeToDelete->right;
+					delete nodeToDelete;
+				}
 			}
 		}
 	}
