@@ -53,9 +53,11 @@ int main()
 	myFile.close();
 	cout << endl;
 
+	/*
 	cout << "test" << endl;
 	node * test = searchNode(root, "van");
 	cout << test->myString << endl;
+	*/
 
 	// Menu
 	int userSelection;
@@ -284,9 +286,93 @@ node * searchNode(node * &inTree, string toFind)
 
 void deleteNode(node * &inTree, string toDelete)
 {
+	// Find the node to delete
+	node * nodeToDelete = inTree;
+	node * parent = NULL;
+	bool found = false;
+	while (!found && nodeToDelete != NULL)
+	{
+		if (nodeToDelete->myString == toDelete)
+		{
+			found = true;
+		}
+		else
+		{
+			parent = nodeToDelete;
+			if (nodeToDelete->myString > toDelete)
+			{
+				nodeToDelete = nodeToDelete->left;
+			}
+			else
+			{
+				nodeToDelete = nodeToDelete->right;
+			}
+		}
+	}
+
+	if (!found)
+	{
+		cout << "Sorry, that string was not found in the binary search tree";
+		return;
+	}
+	// End searching for the node to delete
+
+	// Delete procedure if the node to delete has only one child
+	if (nodeToDelete->left == NULL || nodeToDelete->right == NULL)
+	{
+		node * newChild = NULL;
+		if (nodeToDelete->left == NULL)
+		{
+			newChild = nodeToDelete->right;
+		}
+		else
+		{
+			newChild = nodeToDelete->left;
+		}
+
+		if (parent == NULL) // The root is to be deleted
+		{
+			inTree = newChild;
+		}
+		else if (parent->left->myString == nodeToDelete->myString)
+		{
+			parent->left = newChild;
+		}
+		else
+		{
+			parent->right = newChild;
+		}
+		return;
+	}
+
+	// Delete procedure if the node to delete has two children
+	
+	// Find the smallest element in the right subtree of the node to delete
+	node * smallestParent = nodeToDelete;
+	node * smallest = nodeToDelete->right;
+	while (smallest->left != NULL)
+	{
+		smallestParent = smallest;
+		smallest = smallest->left;
+	}
+	// At this point, 'smallest' contains the smallest child in the right subtree of the node to delete
+
+	nodeToDelete->myString = smallest->myString;
+	nodeToDelete->occurrences = smallest->occurrences;
+	if (smallestParent->myString == nodeToDelete->myString)
+	{
+		smallestParent->right = smallest->right;
+	}
+	else
+	{
+		smallestParent->left = smallest->right;
+	}
+
+
+	/*
 	// Search for the string in a node in the BST, and return the parent of that specific node to the function
 	node * parent = searchNode(inTree, toDelete);
-	if (parent->nodeLevel == 1) // The user wants to remove the root node
+	if (parent->myString == inTree->myString) // The user wants to remove the root node
 	{
 		deleteRoot(parent);
 	}
@@ -306,19 +392,18 @@ void deleteNode(node * &inTree, string toDelete)
 			toDeleteLeftChild = false;
 		}
 
-		// If the node to delete does not have any children, delete the node and set its parent's reference to NULL
+		// If the node to delete does not have any children, set its parent's reference to NULL and delete the node 
 		if (nodeToDelete->left == NULL && nodeToDelete->right == NULL)
 		{
 			if (toDeleteLeftChild)
 			{
 				parent->left = NULL;
-				delete nodeToDelete;
 			}
 			else
 			{
 				parent->right = NULL;
-				delete nodeToDelete;
 			}
+			delete nodeToDelete;
 		}
 		// If the node to delete has only one child, bypass the node to delete and connect the parent with the child's child
 		else if (nodeToDelete->left == NULL || nodeToDelete->right == NULL)
@@ -328,31 +413,51 @@ void deleteNode(node * &inTree, string toDelete)
 				if (toDeleteLeftChild)
 				{
 					parent->left = nodeToDelete->right;
-					delete nodeToDelete;
 				}
 				else
 				{
 					parent->right = nodeToDelete->right;
-					delete nodeToDelete;
 				}
+				delete nodeToDelete;
 			}
 			else if (nodeToDelete->right == NULL)
 			{
 				if (toDeleteLeftChild)
 				{
 					parent->left = nodeToDelete->left;
-					delete nodeToDelete;
 				}
 				else
 				{
 					parent->right = nodeToDelete->left;
-					delete nodeToDelete;
 				}
+				delete nodeToDelete;
 			}
 		}
 		// If the node has two children...
 		else
 		{
+			// Find the smallest element of the right subtree
+			node * smallestParent = nodeToDelete;
+			node * smallest = nodeToDelete->right;
+			while (smallest->left != NULL)
+			{
+				smallestParent = smallest;
+				smallest = smallest->left;
+			}
+			
+			// 'smallest' contains the smallest child in the right subtree of the 'nodeToDelete'
+			nodeToDelete->myString = smallest->myString;
+			nodeToDelete->occurrences = smallest->occurrences;
+			if (smallestParent->myString == nodeToDelete->myString)
+			{
+				smallestParent->right = smallest->right;
+			}
+			else
+			{
+				smallestParent->left = smallest->right;
+			}
+
+			// old delete two children
 			if (toDeleteLeftChild)
 			{
 				// Check if the node to delete has any leafs...if so, replace the node to delete with the leaf
@@ -373,8 +478,10 @@ void deleteNode(node * &inTree, string toDelete)
 					delete nodeToDelete;
 				}
 			}
+			// end old delete two children
 		}
 	}
+	*/
 }
 
 void deleteRoot(node * &inTree)
