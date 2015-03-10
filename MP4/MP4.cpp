@@ -9,15 +9,17 @@ occurrences of each word.
 ******************************************************************************************************************************************/
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
+#include <queue>
 
 using namespace std;
 
 struct node
 {
 	string myString;
-	int occurrences;
+	int occurrences = 1;
 	int nodeLevel;
 	node * left;
 	node * right;
@@ -31,9 +33,8 @@ void traversePreOrder(node *);
 void traversePostOrder(node *);
 void traverseLevelOrder(node *);
 // End traverse functions
-node * searchNode(node * &, string);
+// node * searchNode(node * &, string);
 void deleteNode(node * &, string);
-void deleteRoot(node * &);
 
 int main()
 {
@@ -41,7 +42,6 @@ int main()
 	node * root = new node;
 	root->left = NULL;
 	root->right = NULL;
-	root->nodeLevel = 1;
 	// Build the binary search tree by reading in words from the file
 	string line;
 	ifstream myFile("myFile.txt");
@@ -51,6 +51,9 @@ int main()
 			addNode(root, line);
 		}
 	myFile.close();
+	cout << endl << endl;
+
+	traverseInOrder(root);
 	cout << endl;
 
 	/*
@@ -73,7 +76,7 @@ int main()
 
 		switch (userSelection)
 		{
-		case 1:
+		case 1: // TRAVERSE
 			int traverseSelection;
 			do
 			{
@@ -103,8 +106,7 @@ int main()
 					traverseLevelOrder(root);
 					break;
 
-				case 5:
-					// go back up one level in menu
+				case 5: // go back up one level in menu
 					break;
 
 				default:
@@ -114,22 +116,19 @@ int main()
 			} while (traverseSelection != 5);
 			break;
 
-		case 2:
-			// insert
+		case 2: // INSERT
 			cout << "Please enter the string you would like to insert into the binary tree: ";
-			
 			cin >> insertInput;
 			addNode(root, insertInput);
 			break;
 
-		case 3:
-			// delete
+		case 3: // DELETE
 			cout << "Please enter the string you would like to delete from the binary tree: ";
 			cin >> deleteInput;
 			deleteNode(root, deleteInput);
 			break;
 
-		case 4: // Exit the program
+		case 4: // EXIT
 			break;
 
 		default:
@@ -137,13 +136,13 @@ int main()
 			break;
 		}
 	} while (userSelection != 4);
-	cout << endl << root->occurrences;
 
 	system("PAUSE");
 }
 
 void addNode(node * &inTree, string inString)
 {
+	int currentTreeLevel = 1;
 	node * current = inTree;
 	bool added = false;
 	while (!added)
@@ -157,13 +156,14 @@ void addNode(node * &inTree, string inString)
 				current->left = NULL;
 				current->right = NULL;
 				current->myString = inString;
-				current->occurrences = 1;
+				current->nodeLevel = currentTreeLevel;
 				cout << current->myString;
 				added = true;
 			}
 			else
 			{
 				current = current->left;
+				currentTreeLevel++;
 			}
 		}
 		else if (inString > current->myString)
@@ -175,22 +175,25 @@ void addNode(node * &inTree, string inString)
 				current->left = NULL;
 				current->right = NULL;
 				current->myString = inString;
-				current->occurrences = 1;
+				current->nodeLevel = currentTreeLevel;
 				cout << current->myString;
 				added = true;
 			}
 			else
 			{
 				current = current->right;
+				currentTreeLevel++;
 			}
 		}
 		else
 		{
 			// the string has already been found in a node, so increment the occurrences
 			current->occurrences++;
+			cout << current->occurrences << endl;
 			added = true;
 		}
 	}
+	return;
 }
 
 void traverseInOrder(node * inTree)
@@ -202,7 +205,7 @@ void traverseInOrder(node * inTree)
 		{
 			traverseInOrder(current->left);
 		}
-		cout << current->myString << " ";
+		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s); node level: " << current->nodeLevel << endl;
 		if (current->right != NULL)
 		{
 			traverseInOrder(current->right);
@@ -215,7 +218,7 @@ void traversePreOrder(node * inTree) // Data Left Right
 	node * current = inTree;
 	if (current)
 	{
-		cout << current->myString << " ";
+		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s)" << endl;
 		if (current->left != NULL)
 		{
 			traversePreOrder(current->left);
@@ -240,52 +243,32 @@ void traversePostOrder(node * inTree) // Left Right Data
 		{
 			traversePostOrder(current->right);
 		}
-		cout << current->myString << " ";
+		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s)" << endl;
 	}
 }
 
 void traverseLevelOrder(node * inTree)
 {
-	node * current = inTree;
+	// Code adapted from https://www.youtube.com/watch?v=86g8jAQug04
 	
-}
-
-node * searchNode(node * &inTree, string toFind)
-{
-	node * current = inTree;
-	if (toFind == current->myString) // The root node is where the string to find is located
+	if (inTree == NULL) return;
+	queue<node *> Q;
+	Q.push(inTree);
+	while (!Q.empty())
 	{
-		return current;
-	}
-	else
-	{
-		if (toFind < current->myString)
-		{
-			if (toFind == current->left->myString)
-			{
-				return current;
-			}
-			else
-			{
-				return searchNode(current->left, toFind);
-			}
-		}
-		else if (toFind > current->myString)
-		{
-			if (toFind == current->right->myString)
-			{
-				return current;
-			}
-			else
-			{
-				return searchNode(current->right, toFind);
-			}
-		}
+		node * current = Q.front();
+		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s); node level: " << current->nodeLevel << endl;
+		if (current->left != NULL) Q.push(current->left);
+		if (current->right != NULL) Q.push(current->right);
+		Q.pop(); // remove the element at the front of the queue
 	}
 }
 
 void deleteNode(node * &inTree, string toDelete)
 {
+	// This funtion's code is adapted from the 'Big Java' textbook
+	
+	int currentTreeLevel = 1;
 	// Find the node to delete
 	node * nodeToDelete = inTree;
 	node * parent = NULL;
@@ -307,6 +290,7 @@ void deleteNode(node * &inTree, string toDelete)
 			{
 				nodeToDelete = nodeToDelete->right;
 			}
+			currentTreeLevel++;
 		}
 	}
 
@@ -334,7 +318,7 @@ void deleteNode(node * &inTree, string toDelete)
 		{
 			inTree = newChild;
 		}
-		else if (parent->left->myString == nodeToDelete->myString)
+		else if (parent->left != NULL && parent->left->myString == nodeToDelete->myString)
 		{
 			parent->left = newChild;
 		}
@@ -368,7 +352,7 @@ void deleteNode(node * &inTree, string toDelete)
 		smallestParent->left = smallest->right;
 	}
 
-
+	// Commented out below are my original delete and search functions
 	/*
 	// Search for the string in a node in the BST, and return the parent of that specific node to the function
 	node * parent = searchNode(inTree, toDelete);
@@ -484,7 +468,38 @@ void deleteNode(node * &inTree, string toDelete)
 	*/
 }
 
-void deleteRoot(node * &inTree)
+/*
+node * searchNode(node * &inTree, string toFind)
 {
-	// procedure for deleting the root of the BST
+node * current = inTree;
+if (toFind == current->myString) // The root node is where the string to find is located
+{
+return current;
 }
+else
+{
+if (toFind < current->myString)
+{
+if (toFind == current->left->myString)
+{
+return current;
+}
+else
+{
+return searchNode(current->left, toFind);
+}
+}
+else if (toFind > current->myString)
+{
+if (toFind == current->right->myString)
+{
+return current;
+}
+else
+{
+return searchNode(current->right, toFind);
+}
+}
+}
+}
+*/
