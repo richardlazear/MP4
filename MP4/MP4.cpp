@@ -56,17 +56,12 @@ int main()
 	traverseInOrder(root);
 	cout << endl;
 
-	/*
-	cout << "test" << endl;
-	node * test = searchNode(root, "van");
-	cout << test->myString << endl;
-	*/
-
 	// Menu
 	int userSelection;
 	string insertInput, deleteInput;
 	do
 	{
+		cout << "MAIN MENU" << endl;
 		cout << "1. Traverse" << endl;
 		cout << "2. Insert" << endl;
 		cout << "3. Delete" << endl;
@@ -81,6 +76,7 @@ int main()
 			do
 			{
 				cout << endl;
+				cout << "TRAVERSE MENU" << endl;
 				cout << "1. InOrder" << endl;
 				cout << "2. PreOrder" << endl;
 				cout << "3. PostOrder" << endl;
@@ -218,7 +214,7 @@ void traversePreOrder(node * inTree) // Data Left Right
 	node * current = inTree;
 	if (current)
 	{
-		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s)" << endl;
+		cout << current->myString << endl;
 		if (current->left != NULL)
 		{
 			traversePreOrder(current->left);
@@ -243,7 +239,7 @@ void traversePostOrder(node * inTree) // Left Right Data
 		{
 			traversePostOrder(current->right);
 		}
-		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s)" << endl;
+		cout << current->myString << endl;
 	}
 }
 
@@ -257,7 +253,7 @@ void traverseLevelOrder(node * inTree)
 	while (!Q.empty())
 	{
 		node * current = Q.front();
-		cout << left << setw(15) << current->myString << "occurs " << current->occurrences << " time(s); node level: " << current->nodeLevel << endl;
+		cout << current->myString << endl;
 		if (current->left != NULL) Q.push(current->left);
 		if (current->right != NULL) Q.push(current->right);
 		Q.pop(); // remove the element at the front of the queue
